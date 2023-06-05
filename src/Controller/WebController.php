@@ -16,7 +16,10 @@ class WebController extends AbstractController
     public function interactWithWebsite()
     {
         $url = 'https://www2.agenciatributaria.gob.es/wlpl/inwinvoc/es.aeat.dit.adu.eeca.catalogo.vis.VisualizaSc?COMPLETA=NO&ORIGEN=J';
-        $verificationCode = 'ZGUG4NZVWJUSMNTV';
+        $verificationCode = '6V2K3RENZBQKD2RV';
+        //6V2K3RENZBQKD2RV
+        //ZGUG4NZVWJUSMNTV
+        //XRYRPURQA7YL2W7K
 
         $client = HttpClient::create();
         $response = $client->request('GET', $url);
@@ -49,20 +52,25 @@ class WebController extends AbstractController
         // Obtener el contenido del archivo
         $fileContent = $response->getContent();
 
-        $filePath = '/app/public/ficheros/descargado.pdf';
+        
         $directoryPath = '/app/public/ficheros/';
         if (!is_dir($directoryPath)) {
             mkdir($directoryPath, 0755, true);
         }
 
-        $filePath = $directoryPath . 'descargado.pdf';
+        $filePath = $directoryPath . '_' . $verificationCode . '.pdf';
 
-        file_put_contents($filePath, $fileContent);
+        // Verificar si el archivo ya existe
+        if (!file_exists($filePath)) {
+            // Guardar el archivo solo si no existe previamente
+            file_put_contents($filePath, $fileContent);
 
 
 
         // Obtener el contenido de la respuesta
         $resultHtml = $response->getContent();
+    }
+        
 
         return $this->json('Archivo descargado exitosamente');
     }
